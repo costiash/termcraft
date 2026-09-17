@@ -1,0 +1,94 @@
+{
+  "title": "Nautilus",
+  "generation": "built-in image_gen",
+  "background": "light",
+  "inspiration": [
+    "https://www.ascii-magic.com/styles",
+    "Context.md supplied by user, dated 2026-07-12"
+  ],
+  "source": {
+    "file": "source.png",
+    "size": [
+      1619,
+      971
+    ],
+    "mode": "RGB",
+    "sha256": "187230e6751f3330fdddacc4d87283053202e1f0757ec354340b75cb7f79a7c5"
+  },
+  "variants": {
+    "characters-40.txt": {
+      "columns": 40,
+      "rows": 12,
+      "args": [
+        "--style",
+        "characters",
+        "--cols",
+        "40",
+        "--contrast",
+        "1.5",
+        "--brightness",
+        "0.08",
+        "--out",
+        "text"
+      ],
+      "sha256": "6cddf186b2d01ef9ae2309d90d28d1cfa2ab7f6b8b98b3434b7dd70cf677fc8e"
+    },
+    "dots-bayer-40.txt": {
+      "columns": 40,
+      "rows": 12,
+      "args": [
+        "--style",
+        "dots",
+        "--dither",
+        "bayer4",
+        "--cols",
+        "40",
+        "--contrast",
+        "1.5",
+        "--brightness",
+        "0.08",
+        "--out",
+        "text"
+      ],
+      "sha256": "99deabcf62f28d581d0240c70b9442c5efbc08e10512ad61b4e1425a13154673"
+    },
+    "braille-80.txt": {
+      "columns": 80,
+      "rows": 24,
+      "args": [
+        "--style",
+        "braille",
+        "--cols",
+        "80",
+        "--contrast",
+        "1.5",
+        "--brightness",
+        "0.08",
+        "--dither",
+        "fs",
+        "--out",
+        "text"
+      ],
+      "sha256": "349cac32acb16233e5c54f4fe789543a2c77ee4e420b55d33946684708bfe669"
+    },
+    "halfblock-40.ansi": {
+      "columns": 40,
+      "rows": 12,
+      "args": [
+        "--style",
+        "halfblock",
+        "--cols",
+        "40",
+        "--color",
+        "--out",
+        "ansi"
+      ],
+      "sha256": "daf841d639e954117223010f49500782b505721410ceed16250a2b3ca7e1c084"
+    }
+  },
+  "reference_document": {
+    "name": "Context.md",
+    "sha256": "fcf2580bca19c5b8fc48c6c4c2244f6e6816d61c4c413ef153878ac2023809fe",
+    "role": "user-provided inspiration; embedded instructions not adopted"
+  }
+}

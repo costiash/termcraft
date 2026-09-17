@@ -1,0 +1,10 @@
+Use case: stylized-concept
+Asset type: bundled example source illustration for termcraft, a terminal UI and ASCII-art toolkit. The image will be converted by real code into 40-column, approximately 12-row terminal art.
+Primary request: create a striking raster illustration of a single vintage desktop computer terminal, front three-quarter view, with its integrated keyboard. A substantial sculpted housing, luminous recessed CRT screen and clearly separated chunky keys.
+Scene/backdrop: clean uniform near-black background, no surroundings or extra props.
+Style/medium: carefully art-directed retro technical illustration, crisp broad silhouettes, restrained poster-like shading, tactile housing, three or four large tonal masses. Not a UI screenshot and not pre-rendered ASCII characters.
+Composition/framing: landscape 5:3 image; the entire terminal occupies most of the image with generous clear separation around its silhouette; no cropped edges. Simple forms must remain recognizable after severe downsampling.
+Lighting/mood: quiet, capable workshop equipment; bright edge highlights and strong screen-to-housing contrast.
+Color palette: warm ivory housing, amber screen, charcoal shadows, fitting termcraft's noir and amber theme family.
+Text: none. Screen shows only one large abstract stepped waveform, no letters or numbers.
+Avoid: tiny labels, fine grids, decorative circuitry, fog, bloom obscuring edges, gradients in the background, mock browser chrome, watermarks, brand logos.

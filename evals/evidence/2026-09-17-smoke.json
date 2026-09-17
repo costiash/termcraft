@@ -1,0 +1,35 @@
+{
+ "claudeVersion": "2.1.274",
+ "startedAt": "2026-09-17T20:50:23.379Z",
+ "command": "claude plugin eval . --trust-plugin --tag smoke --runs 1 --ablation none --no-publish --max-cost-usd 3",
+ "note": "read-only tool set (no --allow-tools Bash: the review container cannot start the bubblewrap sandbox); the agent hand-traced preview_theme.py instead of running it and said so",
+ "costUsd": 0.4412016000000001,
+ "durationSeconds": 218,
+ "case": "design-theme-pick",
+ "score": 1,
+ "passed": true,
+ "turns": 2,
+ "graders": [
+  {
+   "name": "mentions-fallbacks",
+   "passed": true,
+   "explanation": "matched NO_COLOR|mono|ascii"
+  },
+  {
+   "name": "names-bank-themes",
+   "passed": true,
+   "explanation": "matched \\b(noir|slate|blueprint|phosphor|amber|paper|cyber|mono)\\b[\\s\\S]*\\b(noir|slate|blueprint|phosphor|amber|paper|cyber|mono)\\b"
+  },
+  {
+   "name": "no-hand-picked-hex",
+   "passed": true,
+   "explanation": "judge votes: PASS PASS PASS"
+  },
+  {
+   "name": "routes-to-tui-design",
+   "passed": true,
+   "explanation": "matched tui-designer|tui-design|termcraft:design"
+  }
+ ],
+ "lastMessage": "I asked the tui-designer agent to shortlist candidates for `pb` and render real preview screens rather than just describe options. One caveat up front: it ran in a sandbox without shell access, so it hand-traced the exact rendering code/data instead of executing it live, and it didn't find a `pb` codebase in this working directory \u2014 so previews are representative of the ops/pipeline description, not your actual current output.\n\n## Shortlist (from the \"ops/data pipeline installer\" mood)\n\n**1. Noir** \u2014 sepia-on-black, one amber accent. Calm, readable, the skill's default pick for ops/data/finance consoles.\n\n**2. Slate** \u2014 grey-blue, the \"safe, unopinionated\" choice. Rounded box corners, slab-style banner.\n\n**3. Blueprint** \u2014 navy/blue, cross-glyph meter (`\u256c\u256a\u253c\u00b7` instead of a plain bar) that leans into the \"pipeline/infra\" feel. Slightly colder/more corporate than the other two.\n\nAll three render the same content (plan table, \"what never happens\" invariants panel, progress line, outcome) \u2014 only color, box-drawing weight, meter/mark glyphs, and banner style differ. Example plan row:\n\n```\n \u2717 Docker Engine + Compose       blocked  daemon unreachable \u2192 install Docker\n                                          Engine + Compose plugin, add user to docker\n```\n\n## What CI / NO_COLOR / piped users see\n\n- **`NO_COLOR=1` or piped output**: identical text to the interactive version, just no escape codes \u2014 same `\u2713 \u2717 \u2022 \u2026 ?` marks, same box-drawing, same meter glyphs. Every state is already double-coded (glyph + word like `done`/`blocked`), so nothing is lost. This holds for all three themes.\n- **`TERM=dumb` / non-UTF / `HARNESS_ASCII=1`**: all three **converge to the same plain-ASCII output** (`+ * x ? ~ -` marks, `#=-.` meter, `+-+|` boxes). In a fully dumb CI runner, noir/slate/blueprint look identical except for the theme name printed in the header \u2014 so the choice really only matters for the interactive/truecolor experience.\n- All three also ship a light-background palette, so nothing breaks if an operator happens to be on a light terminal.\n\n**My lean**: blueprint if you want the pipeline/infra visual signal to survive even partially degraded terminals (its meter looks intentional rather than \"broken\" once color drops); noir if you just want the most legible, low-drama default.\n\nWhich one do you want to go with? Once you pick, applying it is a single `make_theme.py` run against the actual `pb` repo \u2014 nothing has been touched yet. Also worth confirming: is `pb`'s source in a different directory than this one, since the agent couldn't locate it here?"
+}

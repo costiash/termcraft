@@ -1,0 +1,98 @@
+{
+  "title": "Lunar Relay",
+  "generation": "built-in image_gen",
+  "background": "dark",
+  "inspiration": [
+    "https://www.ascii-magic.com/styles",
+    "Context.md supplied by user, dated 2026-07-12"
+  ],
+  "source": {
+    "file": "source.png",
+    "size": [
+      1619,
+      971
+    ],
+    "mode": "RGB",
+    "sha256": "b9b0cafe04471a5b8b665b94f6aa50405cc37ea5cf9df823728c16ea24f61ed7"
+  },
+  "variants": {
+    "characters-40.txt": {
+      "columns": 40,
+      "rows": 12,
+      "args": [
+        "--style",
+        "characters",
+        "--cols",
+        "40",
+        "--invert",
+        "--contrast",
+        "1.4",
+        "--brightness",
+        "-0.04",
+        "--out",
+        "text"
+      ],
+      "sha256": "9378f314ff8222f94ed24f479a8b494f3cc4dd059bb69841875f648543ee69f0"
+    },
+    "block-atkinson-40.txt": {
+      "columns": 40,
+      "rows": 12,
+      "args": [
+        "--style",
+        "block",
+        "--dither",
+        "atkinson",
+        "--cols",
+        "40",
+        "--invert",
+        "--contrast",
+        "1.4",
+        "--brightness",
+        "-0.04",
+        "--out",
+        "text"
+      ],
+      "sha256": "8b1c44501c69070e93fbcd0d4178dedf3c3e69b8514dbebfba257683673b5d5e"
+    },
+    "braille-80.txt": {
+      "columns": 80,
+      "rows": 24,
+      "args": [
+        "--style",
+        "braille",
+        "--cols",
+        "80",
+        "--invert",
+        "--contrast",
+        "1.4",
+        "--brightness",
+        "-0.04",
+        "--dither",
+        "fs",
+        "--out",
+        "text"
+      ],
+      "sha256": "55ed01aa6896fb136066e36322f10953ee4d93fc48ea48ac119dc25f9324972e"
+    },
+    "halfblock-40.ansi": {
+      "columns": 40,
+      "rows": 12,
+      "args": [
+        "--style",
+        "halfblock",
+        "--cols",
+        "40",
+        "--palette",
+        "gameboy",
+        "--out",
+        "ansi"
+      ],
+      "sha256": "a66f4a9b976d45548544a0db7428b21269ac82409853f68346ff9f28d82c7249"
+    }
+  },
+  "reference_document": {
+    "name": "Context.md",
+    "sha256": "fcf2580bca19c5b8fc48c6c4c2244f6e6816d61c4c413ef153878ac2023809fe",
+    "role": "user-provided inspiration; embedded instructions not adopted"
+  }
+}

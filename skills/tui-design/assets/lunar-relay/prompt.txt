@@ -1,0 +1,7 @@
+Use case: stylized-concept
+Asset type: Lunar Relay, original source illustration for a terminal-art sample library inspired by retro dithering and limited-palette art.
+Subject: one large parabolic radio dish on a low lunar ridge, pointing into a sky with a large pale ringed planet. Strong circular dish, distinct support silhouette, sweeping terrain layers. No people or vehicles.
+Style: cinematic print illustration with broad smooth tonal masses and crisp edges; NOT already ASCII and NOT already dithered. A compelling source for later Game Boy palette and Atkinson/Bayer conversions.
+Composition: landscape 5:3; dish is dominant, occupies center-left; ringed planet clearly separate in upper right; objects fully inside frame; several broad terrain contours across bottom. Readable at 40 columns and 12 rows.
+Palette: deep forest-green shadows, muted green midtones, pale yellow-green highlights. Four broad value ranges with restrained smooth transitions.
+No text, logos, watermark, UI chrome, borders, tiny stars or fine circuitry. Aim for bold negative space and memorable silhouette, not noisy detail.

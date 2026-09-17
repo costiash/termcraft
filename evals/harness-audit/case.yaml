@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: harness-audit
+tags: [harness, audit]
+description: An existing interactive installer is explored in a pty, its gaps tabled with evidence, and the fixes verified.
+runs: 1
+expected_outcome: The audit finds the planted defects (token echoed in clear, no dry-run/check, no resume, exit 0 on failure, colour-only status) with transcript evidence, fixes them, and re-drives the installer.
+execution:
+  max_turns: 80
+  timeout_seconds: 1800
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+context:
+  scaffold_script: scaffold.sh

@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: harness-create
+tags: [harness, create]
+description: install.sh of a small project becomes a finite-state process model and a kit-based, pty-verified operator harness.
+runs: 1
+expected_outcome: process-model.md, a harness .py on harness_kit.py, HARNESS.md and scenarios/ exist; the harness was driven with drive_harness.py; the reply reports stages, exit codes and what was verified.
+execution:
+  max_turns: 80
+  timeout_seconds: 1800
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+context:
+  scaffold_script: scaffold.sh

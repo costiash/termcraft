@@ -1,0 +1,8 @@
+Use case: stylized-concept
+Asset type: Voxel Grove, original source artwork for a playful terminal-art reference library inspired by voxel cubes and limited-color pixel art.
+Subject: a tiny floating terraced island carrying one angular bonsai-like tree. Island and tree formed from deliberately chunky isometric cubes. Thick bent trunk, three clearly separated blocky canopy masses, stair-stepped island underside.
+Style: polished physical miniature rendered as tactile matte voxel sculpture; visible top, left and right cube faces with coherent lighting. Restrained large blocks, no microvoxel noise. Do not generate ASCII characters.
+Composition: landscape 5:3, object centered, whole island and canopy within frame with generous dark negative space. Strong silhouette readable at 40 columns by 12 rows. No surrounding scenery or props.
+Palette: cyan and turquoise lit faces, deep navy shadows, selective magenta foliage accents, against near-black navy background. Inspired by classic limited-color computing, not a rainbow.
+Lighting: precise studio key light, crisp planes, faint grounding ambient shadow, no fog or bloom.
+No text, logos, labels, symbols, watermarks, frame, diagram annotations, browser chrome, or interface controls.

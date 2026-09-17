@@ -1,0 +1,8 @@
+Use case: stylized-concept
+Asset type: Nautilus, original print-oriented source illustration for halftone dot, dense-character and Braille terminal rendering.
+Subject: one cutaway nautilus shell, large mathematically graceful spiral with six or seven broad chamber divisions, viewed directly from its cut face. Natural beauty and strong recognizable structure, not a technical diagram.
+Scene: warm ivory paper background with lots of clear space, only a short subtle grounding shadow.
+Composition: landscape 5:3, shell centered and filling most of image height, entire shell visible, no other objects.
+Style: exquisite ink-wash and graphite natural-history illustration, bold near-black contour, broad charcoal chamber shadows and luminous ivory ridges; deliberately simplify the small inner chamber detail to retain the spiral at 40-column terminal resolution. Smooth tonal transitions for later halftoning; no pre-applied dots or ASCII.
+Palette: warm paper, graphite-black and muted cool gray only.
+No text, labels, numbers, border, watermark, brand, ornamental flourishes, false UI, or microscopic line work. Elegant organic counterpart to technical retro-terminal artwork.

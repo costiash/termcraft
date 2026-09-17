@@ -1,0 +1,96 @@
+{
+  "title": "Voxel Grove",
+  "generation": "built-in image_gen",
+  "background": "dark",
+  "inspiration": [
+    "https://www.ascii-magic.com/styles",
+    "Context.md supplied by user, dated 2026-07-12"
+  ],
+  "source": {
+    "file": "source.png",
+    "size": [
+      1619,
+      971
+    ],
+    "mode": "RGB",
+    "sha256": "ca8b28b4ce9b4219b73c3fe3d20df3ff9234089cf6bf0a7a8cd5149c3a2503fb"
+  },
+  "variants": {
+    "characters-40.txt": {
+      "columns": 40,
+      "rows": 12,
+      "args": [
+        "--style",
+        "characters",
+        "--cols",
+        "40",
+        "--invert",
+        "--contrast",
+        "1.2",
+        "--brightness",
+        "0.05",
+        "--out",
+        "text"
+      ],
+      "sha256": "b307faecb9417176809be41522a78b048c0239f795c4a805508911158a45d8ff"
+    },
+    "lines-40.txt": {
+      "columns": 40,
+      "rows": 12,
+      "args": [
+        "--style",
+        "lines",
+        "--cols",
+        "40",
+        "--invert",
+        "--contrast",
+        "1.2",
+        "--brightness",
+        "0.05",
+        "--out",
+        "text"
+      ],
+      "sha256": "4889c50f6f7a43340cc20190cfc5c25134158a6a8be253a8688004cc5885918e"
+    },
+    "braille-80.txt": {
+      "columns": 80,
+      "rows": 24,
+      "args": [
+        "--style",
+        "braille",
+        "--cols",
+        "80",
+        "--invert",
+        "--contrast",
+        "1.2",
+        "--brightness",
+        "0.05",
+        "--dither",
+        "fs",
+        "--out",
+        "text"
+      ],
+      "sha256": "a95e639accb23bd0713997f951a7ccde9f0ab27affe4064469b633a0ba563c60"
+    },
+    "halfblock-40.ansi": {
+      "columns": 40,
+      "rows": 12,
+      "args": [
+        "--style",
+        "halfblock",
+        "--cols",
+        "40",
+        "--palette",
+        "cga",
+        "--out",
+        "ansi"
+      ],
+      "sha256": "0c9afea97020e6b12337af55dfc9e232a07b48d55eff490156dcd0e49ee835b9"
+    }
+  },
+  "reference_document": {
+    "name": "Context.md",
+    "sha256": "fcf2580bca19c5b8fc48c6c4c2244f6e6816d61c4c413ef153878ac2023809fe",
+    "role": "user-provided inspiration; embedded instructions not adopted"
+  }
+}

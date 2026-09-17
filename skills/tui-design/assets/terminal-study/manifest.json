@@ -1,0 +1,29 @@
+{
+  "generation": "built-in image_gen",
+  "source": {
+    "file": "source.png",
+    "size": [
+      1619,
+      971
+    ],
+    "mode": "RGB",
+    "sha256": "6fdf604e4ab193517a514cc1cf42d09014fdffcf9a8063809fb8d0ec86f40649"
+  },
+  "variants": {
+    "characters-40.txt": {
+      "columns": 40,
+      "rows": 12,
+      "sha256": "df6f87c7d58b46fd2a86a76cd3cef5f0c4a144927c0e6e377c9fd3ec2f501083"
+    },
+    "braille-40.txt": {
+      "columns": 40,
+      "rows": 12,
+      "sha256": "23aea06934d8b23b4d52b680ca3ba558bc831360bc5a8dfd79ffb7615e99ebcd"
+    },
+    "halfblock-40.ansi": {
+      "columns": 40,
+      "rows": 12,
+      "sha256": "525d56f7dcb4a575386d0e630d1f5a23c98ed2fc61322284b4d583f9dfdf4798"
+    }
+  }
+}
