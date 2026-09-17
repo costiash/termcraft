@@ -40,9 +40,29 @@ jobs:
       - run: |
           npm install -g @anthropic-ai/claude-code@latest
           echo "$(npm prefix -g)/bin" >> "$GITHUB_PATH"
-      - run: sudo apt-get install -y bubblewrap socat
+      # the CLI refuses a Bash grant without a sandbox backend; Ubuntu 24.04 also blocks unprivileged user
+      # namespaces (AppArmor) which bubblewrap needs, so lift that for the job and prove bwrap works first
+      - run: |
+          sudo apt-get install -y bubblewrap socat
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          bwrap --ro-bind / / --dev /dev --proc /proc --unshare-all true && echo "bwrap ok"
       - env: { ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}" }
         run: claude plugin eval . --trust-plugin --tag smoke --runs 1 --ablation none --allow-tools Bash --no-publish --max-cost-usd 5 --json eval-smoke.json
+      - name: eval summary
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          if not os.path.exists("eval-smoke.json"): raise SystemExit("no eval-smoke.json")
+          d = json.load(open("eval-smoke.json"))
+          print(f"claude {d.get('claudeVersion')}  cost ${d.get('costUsd', 0):.2f}  {d.get('durationSeconds')}s  partial={d.get('partial')} {d.get('partialReason', '')}")
+          for c in d["cases"]:
+              for arm, runs in c["arms"].items():
+                  for r in runs:
+                      print(f"{c['name']} [{arm}] score={r['score']} turns={r['turns']} error={r.get('error')}")
+                      for g in r["graders"]:
+                          print(f"   {'PASS' if g['passed'] else 'FAIL'} {g['name']}: {str(g.get('explanation', ''))[:300]}")
+          PY
       - uses: actions/upload-artifact@v5
         if: always()
         with:
