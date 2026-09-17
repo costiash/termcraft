@@ -55,7 +55,7 @@ def _t(**kw): t = Theme(**kw); THEMES[t.id] = t; return t
 
 _t(id="noir", name="Terminal noir", mood="operator consoles, ops/data/finance tools — sepia ink on black, one amber accent",
    palette={"ink": "#d9c9a1", "dim": "#7b7466", "accent": "#d9a441", "ok": "#8bac0f", "warn": "#e0b04a", "stop": "#e06b6b"},
-   light={"ink": "#2b2418", "dim": "#7b7466", "accent": "#9a6a10", "ok": "#3d6b0a", "warn": "#9a6a10", "stop": "#a83a3a"},
+   light={"ink": "#2b2418", "dim": "#5f584c", "accent": "#9a6a10", "ok": "#3d6b0a", "warn": "#9a6a10", "stop": "#a83a3a"},
    box="light", banner="block", recipe='recipe:v1:{"style":"block","palette":"sepia","fx":["vignette"],"anim":"none"}')
 
 _t(id="blueprint", name="Blueprint", mood="architecture and infra tooling — navy ground, ice ink, cross glyphs",

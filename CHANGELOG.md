@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.7 — 2026-09-18
+- Second live smoke run on 0.7.6 in CI: score 1.0, 9 turns, 19 renderings, ASCII fix confirmed live (`evals/evidence/2026-09-18-ci-smoke-0.7.6.json`).
+- noir light palette: `dim` was the dark value (4.6:1 on white); now `#5f584c` (7.0:1).
+
 ## 0.7.6 — 2026-09-18
 - Live smoke eval passed in GitHub Actions with the Bash sandbox (score 1.0, 11 turns, previews actually rendered; `evals/evidence/2026-09-17-ci-smoke.json`). The run surfaced two real defects, both fixed with regressions:
   - `harness_kit.py` ASCII mode turned `≥`, `≤`, `│`, `─` into `?` — the *unknown* mark. Now `>=`, `<=`, `|`, `-` (plus box/meter glyphs).

@@ -26,7 +26,7 @@ This review inspected the supplied source tree, not a Git diff: `.git` is not a 
 | P2 | Digest imported project-specific assumptions, scanned console commands outside `[project.scripts]`, depended on discovery order, and produced colliding/unescaped Mermaid identifiers/labels. A missing input looked like an empty successful scan. | Deterministic traversal with directory pruning, package discovery before source analysis, tree-derived import candidates, section-scoped script extraction, hashed diagram IDs/escaped labels, and missing-input rejection. |
 | P2 | The supplied source ZIP contained 14 bytecode/cache entries and would become stale after fixes. | Added an explicit-allowlist, atomic package builder; regenerated the ZIP and verified every archived byte against the source. No `.venv`, bytecode or review-evidence directory is included. |
 
-The runtime-contract fixes shipped in **0.7.0**; the current artifact is **0.7.6**: asset-library expansion, license/third-party notices, (0.7.4) the journal-fault correction below plus the unknown-waiting rule, and (0.7.5) the repeatable validation gates and eval suite described at the end. No plugin was globally installed, no repository was initialized, and no commit or publication was performed.
+The runtime-contract fixes shipped in **0.7.0**; the current artifact is **0.7.7**: asset-library expansion, license/third-party notices, (0.7.4) the journal-fault correction below plus the unknown-waiting rule, and (0.7.5) the repeatable validation gates and eval suite described at the end. No plugin was globally installed, no repository was initialized, and no commit or publication was performed.
 
 ## Validation evidence
 

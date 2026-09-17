@@ -1,0 +1,40 @@
+{
+ "claudeVersion": "2.1.275",
+ "startedAt": "2026-09-17T22:33:50.880Z",
+ "where": "GitHub Actions ubuntu-latest, workflow_dispatch, bubblewrap sandbox, plugin 0.7.6",
+ "command": "claude plugin eval . --trust-plugin --tag smoke --runs 1 --ablation none --allow-tools Bash --no-publish --max-cost-usd 5",
+ "costUsd": 1.17422525,
+ "durationSeconds": 241,
+ "case": "design-theme-pick",
+ "score": 1,
+ "passed": true,
+ "turns": 9,
+ "graders": [
+  {
+   "name": "mentions-fallbacks",
+   "passed": true,
+   "explanation": "matched NO_COLOR|mono|ascii"
+  },
+  {
+   "name": "names-bank-themes",
+   "passed": true,
+   "explanation": "matched \\b(noir|slate|blueprint|phosphor|amber|paper|cyber|mono)\\b[\\s\\S]*\\b(noir|slate|blueprint|phosphor|amber|paper|cyber|mono)\\b"
+  },
+  {
+   "name": "no-hand-picked-hex",
+   "passed": true,
+   "explanation": "judge votes: PASS PASS PASS"
+  },
+  {
+   "name": "routes-to-tui-design",
+   "passed": true,
+   "explanation": "matched tui-designer|tui-design|termcraft:design"
+  }
+ ],
+ "lastMessage": "Candidates are rendered and nothing was applied. I spot-checked the output myself rather than taking the report at face value; results below.\n\n## View them\n\n```bash\ncd ~/cwd/previews\ncat noir-dark.ansi        # colour, as an operator sees it\ncat slate-dark.ansi\ncat blueprint-dark.ansi\n```\n\n19 renderings in `~/cwd/previews/`: each theme × (dark, dark-ascii, light), plus `mono-*` and `paper-light` as references, each with a `.txt` colourless twin.\n\n## The three\n\nAll three share one skeleton — banner, `── plan ──` table, a \"what never happens\" box, prompts, a progress line, outcome. They differ in palette, box weight, banner weight, and meter texture.\n\n| | ink / accent | boxes | banner | meter |\n|---|---|---|---|---|\n| **noir** | sepia `#d9c9a1` / amber `#d9a441` | `┌┐└┘` | block + `╗╝` shadow, 6 rows | `█▓▒░` |\n| **slate** | grey-blue `#d7dde3` / blue `#7fb2e0` | `╭╮╰╯` | solid slab, 5 rows | `█▓▒░` |\n| **blueprint** | ice `#dfe9ff` / sky `#8fc1ff` | `┌┐└┘` | `▒` shade, 5 rows | `╬╪┼·` |\n\nConfirmed the palettes are genuinely distinct truecolor (`38;2;217;164;65` amber for noir, `38;2;127;178;224` blue for slate, `38;2;143;193;255` sky for blueprint) and that light mode substitutes darker ink rather than reusing the dark values.\n\nThe shared plan screen, at 80 columns:\n\n```\n── plan ────────────────────────────────────────────────────────────────────────\n ✓ host: not root, curl|wget    done     curl, git\n ✓ python3 ≥ 3.10               done     python 3.12.4\n ✗ Docker Engine + Compose      blocked  daemon unreachable  → install Docker\n                                         Engine + Compose plugin, add your user\n                                         to docker\n • setup-environment.sh         todo     environment not configured; .venv\n … service .env: required keys  waiting  after setup\n ? data status (local only)     unknown  waiting for setup (.venv)\n────────────────────────────────────────────────────────────────────────────────\n  2 stage(s) to run, ~11 min expected\n```\n\nOne difference worth seeing before you pick — the banner. Slate and blueprint spell `PB` cleanly; noir's shadowed variant is the muddiest of the three at a glance:\n\n```\nnoir                      slate                blueprint\n████████╗   ████████╗     ████████    ████████  ▒▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒\n██║     ██╗ ██║     ██╗   ██      ██  ██      ██ ▒▒      ▒▒  ▒▒      ▒▒\n████████╗ ╝ ████████╗ ╝   ████████    ████████   ▒▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒\n██║     ╝   ██║     ██╗   ██          ██      ██ ▒▒          ▒▒      ▒▒\n██║         ████████╗ ╝   ██          ████████   ▒▒          ▒▒▒▒▒▒▒▒\n```\n\n## What CI / NO_COLOR users get\n\nRendered by actually running under `NO_COLOR=1` and actually piping to a non-tty, then audited:\n\n- **Zero ESC bytes** in all six CI files — verified with `grep -c $'\\033'`, every one returns 0.\n- **No line over 80 columns** in any of the 19 renderings.\n- `NO_COLOR=1` and piped output are **byte-identical** to each other.\n- Status never depends on colour. Each row carries a glyph *and* the state as a word — `done` / `blocked` / `todo` / `waiting` / `unknown` — so `grep blocked` works in a CI log.\n\nThe catch: without colour the CI output is otherwise the *same* as the terminal output — you still get the full banner and the Unicode box drawing in your logs. Noir's 6-row shadowed banner is the loudest there; blueprint's `▒` shade is the quietest. Set `HARNESS_ASCII=1` in CI and the whole glyph set degrades too — boxes to `+-+|`, marks to `+ * x ? ~`, meter to `#####.....`, banner to plain `#`:\n\n```\n-- plan ------------------------------------------------------------------------\n + python3 >= 3.10              done     python 3.12.4\n x Docker Engine + Compose      blocked  daemon unreachable  -> install Docker\n```\n\n## My recommendation: slate\n\nThe designer argued for noir on mood grounds, and on colour it's a fair call — all three clear contrast thresholds on black (ink:bg 12.8 / 15.3 / 17.2), so this is taste, not safety. But your two stated constraints both point at slate: it's the quietest piped into a CI log, and its banner is legible where noir's is not. Noir's amber is the more distinctive instrument look if the CI surface is rare; blueprint is the most striking but is tuned for a navy ground, so it's the coolest and brightest of the three on true black.\n\nTrade-off against slate: it reads generic, and its blue accent is the one most likely to collide with an operator's own terminal blues.\n\n## Provisional\n\n- The screens use **placeholder stages** (host / python / Docker / setup-environment.sh / .env / data) since there's no `pb` source in the working directory. Point me at it and the pick gets re-rendered against your real stages and wording.\n- Verification is **render-level only** — no pty run, because there's no program to drive. Still owed at apply time: no animation while a prompt is open, and `pb` running unchanged with `theme.py` deleted.\n- Minor: noir's *dim* ink (`#7b7466`) is the same in its light and dark palettes, so secondary text sits near 4.4:1 on white. Only matters if light terminals become a real surface for you.\n\nTell me the pick and I'll resume the designer from these exact files to generate `theme.py` and the banner.",
+ "notes": [
+  "ASCII plan row now reads `python3 >= 3.10` — confirms the 0.7.6 glyph-map fix in a live run",
+  "19 renderings, 0 ESC bytes in all colourless files, no line > 80 cols (measured by the agent)",
+  "observation: noir dim ink was the same value in dark and light palettes (4.6:1 on white) → light dim darkened to #5f584c (7.0:1) in 0.7.7"
+ ]
+}

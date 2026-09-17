@@ -1,6 +1,6 @@
 {
   "name": "termcraft",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "description": "Terminal craft: a specialist agent pair (tui-designer, harness-architect) plus four skills — two knowledge skills, tui-design (theme bank with light/dark palettes, banner font, glyph sets, image→glyph rendering, previews) and cli-harness (digest a codebase or shell script into a finite-state process model and generate or audit a guided, resumable operator CLI harness, verified in a pty), and two entry skills, /termcraft:design and /termcraft:harness, that dispatch to the agents.",
   "author": {
     "name": "Costa Shafranski",
