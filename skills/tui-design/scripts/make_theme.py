@@ -41,6 +41,7 @@ class _Theme:
 THEME = _Theme()
 BANNER = {banner_lines}
 BANNER_ASCII = {banner_ascii}
+THEME.banner_ascii = BANNER_ASCII   # harness_kit.UI swaps this in on non-UTF terminals / HARNESS_ASCII=1
 # legacy names (harnesses generated before termcraft 0.6)
 PALETTE = dict(_DARK)
 BOX = {box!r}

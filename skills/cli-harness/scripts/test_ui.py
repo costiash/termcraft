@@ -35,6 +35,22 @@ class TerminalUI(unittest.TestCase):
         self.assertIn("python3 >= 3.10 | disk <= 80% - done", text)
         self.assertNotIn("?", text)
 
+    def test_plan_title_column_fits_long_titles(self):
+        # found by the live create eval: titles were cut at a fixed 28 chars ("python deps (requirements.tx")
+        rows = [("•", "python deps (requirements.txt)", "todo", "pip install"), ("✓", "host", "done", "ok")]
+        text = self.capture(lambda ui: ui.plan(rows), width=80)
+        self.assertIn("python deps (requirements.txt)", text)
+        self.assertTrue(all(len(l) <= 80 for l in text.splitlines()), text)
+
+    def test_ascii_terminal_uses_theme_ascii_banner(self):
+        class T:
+            banner_ascii = ["#### ####", "#    #  #"]
+            def roles(self, bg="dark"): return {}
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output), patch.multiple(k, TTY=False, RICH=None, MODE="none", UNICODE=False), patch.object(k, "cols", return_value=80):
+            k.UI("relay", banner=["████ ╗", "██╔══╝"], theme=T()).header()
+        self.assertIn("#### ####", output.getvalue()); self.assertNotIn("RELAY", output.getvalue())
+
     def test_color_capabilities(self):
         for env, mode in [({"NO_COLOR": "", "TERM": "xterm"}, "none"),
                           ({"TERM": "dumb", "COLORTERM": "truecolor"}, "none"),

@@ -1,0 +1,65 @@
+{
+ "claudeVersion": "2.1.275",
+ "plugin": "0.7.8",
+ "startedAt": "2026-09-17T23:03:15.947Z",
+ "where": "GitHub Actions ubuntu-latest, --scaffold --allow-tools Bash Write Edit, bubblewrap sandbox (PyPI blocked)",
+ "costUsd": 6.0774989999999995,
+ "durationSeconds": 1802,
+ "case": "harness-create",
+ "score": 0.8571428571428571,
+ "passed": false,
+ "turns": 89,
+ "error": "timed out after 1800s",
+ "graders": [
+  {
+   "name": "driven-in-pty",
+   "passed": true,
+   "explanation": "Bash called 5x (expected 1..∞)"
+  },
+  {
+   "name": "dry-run-exercised",
+   "passed": true,
+   "explanation": "Bash called 6x (expected 1..∞)"
+  },
+  {
+   "name": "handback-quality",
+   "passed": false,
+   "explanation": "judge votes: FAIL FAIL FAIL"
+  },
+  {
+   "name": "harness-on-kit",
+   "passed": true,
+   "explanation": "relay/harness/harness_kit.py exists as expected"
+  },
+  {
+   "name": "process-model-written",
+   "passed": true,
+   "explanation": "relay/harness/process-model.md exists as expected"
+  },
+  {
+   "name": "routes-to-harness-architect",
+   "passed": true,
+   "explanation": "matched harness-architect|termcraft:harness|cli-harness"
+  },
+  {
+   "name": "scenarios-written",
+   "passed": true,
+   "explanation": "relay/harness/scenarios/*.json exists as expected"
+  }
+ ],
+ "what_the_architect_did": [
+  "digest.py → connection-map.json + map.mmd",
+  "process-model.md (9 stages, invariants, exits)",
+  "relayctl.py on harness_kit.py, stdlib tier (runs before any venv exists)",
+  "delegated theme to tui-designer → noir, theme.py + previews, verified 80 cols / NO_COLOR / pipe / ASCII / light / 16-colour / theme.py absent",
+  "12 pty scenarios via drive_harness.py: 5/12 → 10/12 → 12/12 after fixing its own scenario assertions",
+  "offline degrade path because PyPI is blocked in the sandbox",
+  "a real unattended run in the actual relay tree, then restored it",
+  "HARNESS.md; was re-running the 12 scenarios when the 1800 s timeout hit — no hand-back message → handback-quality FAIL"
+ ],
+ "defects_found": [
+  "kit: plain plan path truncated stage titles at a fixed 28 chars (fixed 0.7.9: column fits the longest title, capped)",
+  "kit/make_theme: on ASCII terminals the kit dropped every non-ASCII banner line and fell back to the bare name; theme.py had no way to hand over BANNER_ASCII (fixed 0.7.9: THEME.banner_ascii, UI uses it)",
+  "eval: timeout_seconds 1800 too small for the full create workflow (raised to 3600, max_turns 150)"
+ ]
+}

@@ -93,7 +93,12 @@ jobs:
         if: always()
         run: |
           mkdir -p sandboxes
-          for d in /tmp/claude-eval-*; do [ -d "$d" ] && tar --exclude='*/node_modules' --exclude='*/.venv' -czf "sandboxes/$(basename "$d").tgz" -C "$d" . || true; done
+          # --keep-temp seals home/ and tmp/ (mode 000); open them read-only for the archive, never run git inside
+          for d in /tmp/claude-eval-*; do
+            [ -d "$d" ] || continue
+            sudo chmod -R a+rX "$d" || true
+            tar --exclude='*/node_modules' --exclude='*/.venv' --exclude='*/__pycache__' --exclude='*/.git' -czf "sandboxes/$(basename "$d").tgz" -C "$d" . || true
+          done
           ls -la sandboxes
       - uses: actions/upload-artifact@v5
         if: always()

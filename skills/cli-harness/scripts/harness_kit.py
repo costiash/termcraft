@@ -222,7 +222,8 @@ class UI:
         self.banner = banner or []
         if not UNICODE:
             self.box = BOX["ascii"]; self.meter_ramp = ASCII_GLYPHS["meter"]; self.spin = ASCII_GLYPHS["spinner"]; self.marks = ASCII_GLYPHS["marks"]; self.rule_ch = "-"
-            self.banner = [ln for ln in self.banner if all(ord(c) < 128 for c in ln)] or [name.upper()]
+            # a theme.py from make_theme carries an ASCII twin of its banner; otherwise keep only ASCII lines
+            self.banner = list(getattr(theme, "banner_ascii", None) or []) or [ln for ln in self.banner if all(ord(c) < 128 for c in ln)] or [name.upper()]
         else:
             self.box = BOX[getattr(theme, "box", None) or box]
             self.meter_ramp = g.meter if g else METER; self.spin = g.spinner if g else SPIN
@@ -276,13 +277,16 @@ class UI:
                 t.add_row(_RichText(mark, style=col), _RichText(title), _RichText(status, style=col), _RichText(detail, style=self.s.p["dim"]))
             RICH.print(t); return
         self.rule("plan")
+        import textwrap
+        # title column fits the longest title, capped so ~40% of the line is left for detail (was a fixed 28)
+        tw = self.title_w = max(12, min(max((len(_text(t)) for _, t, _, _ in rows), default=12), cols() * 3 // 5 - 14))
         for mark, title, status, detail in rows:
             mark, title, status, detail = map(_text, (mark, title, status, detail))
             role = {"done": "ok", "todo": "accent", "blocked": "stop", "unknown": "warn", "waiting": "dim", "skip": "dim"}.get(status, "ink")
-            import textwrap
-            lead = 1 + len(mark) + 1 + 28 + 1 + 8 + 1; width = max(20, cols() - lead)
+            lead = 1 + len(mark) + 1 + tw + 1 + 8 + 1; width = max(20, cols() - lead)
             parts = textwrap.wrap(detail, width) or [""]
-            print(f" {self.s.paint(role, mark)} {title[:28].ljust(28)} {self.s.paint(role, status.ljust(8))} {self.s.paint('dim', parts[0])}")
+            if len(title) > tw: title = title[:tw - 1] + "…" if UNICODE else title[:tw - 1] + "~"
+            print(f" {self.s.paint(role, mark)} {title.ljust(tw)} {self.s.paint(role, status.ljust(8))} {self.s.paint('dim', parts[0])}")
             for extra in parts[1:]: print(" " * lead + self.s.paint("dim", extra))
         self.rule()
     def meter(self, frac: float, width: int = 30) -> str:
@@ -303,7 +307,8 @@ class UI:
         el = time.time() - started; frac = 0.0 if failed else 1.0 if done else min(0.97, el / expect) if expect else 0
         self.spin_i += 1; sp = " " if done else self.spin[self.spin_i % len(self.spin)]
         tail = f"{el:4.0f}s" + (f" of ~{expect:.0f}s" if expect and not done else "")
-        sys.stdout.write("\r" + self.s.paint("accent", sp) + " " + title.ljust(28) + " " + self.meter(frac) + " " + self.s.paint("dim", tail) + ("\n" if done else "")); sys.stdout.flush()
+        tw = getattr(self, "title_w", 28)
+        sys.stdout.write("\r" + self.s.paint("accent", sp) + " " + _text(title)[:tw].ljust(tw) + " " + self.meter(frac) + " " + self.s.paint("dim", tail) + ("\n" if done else "")); sys.stdout.flush()
     def ask(self, q: Question, unattended: bool) -> str | None:
         """Answer from env or default (validated) or the person. Returns None when nothing valid is available unattended."""
         for cand in (os.environ.get(q.env) if q.env else None, None if TTY and not unattended else q.default):

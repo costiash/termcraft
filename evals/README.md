@@ -18,7 +18,7 @@ claude plugin eval . --trust-plugin --scaffold --allow-tools Bash Write Edit --r
   --judge-model claude-haiku-4-5 --no-publish --max-cost-usd 15 --json evals/results/last.json
 ```
 
-Each case sets `runs: 1` so a default invocation stays cheap; raise with `--runs`. Skill/agent `tool_used`
+Each case sets `runs: 1` so a default invocation stays cheap; raise with `--runs`. The create/audit cases run 90–120 real turns (digest, model, harness, theme hand-off, 12 pty scenarios, a real run, restore) and need the full `timeout_seconds: 3600` — a first live run at 1800 s finished the work but timed out before the hand-back message. Skill/agent `tool_used`
 graders are scored in the with-plugin arm only (the CLI does that automatically); regex and llm graders score
 both arms, which is what shows the plugin's lift. Read `report.html` for transcripts — a passing score is
 necessary, not sufficient.
