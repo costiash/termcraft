@@ -1,5 +1,17 @@
 name: validate
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      cases:
+        description: "which eval cases to run live"
+        type: choice
+        default: smoke
+        options: [smoke, create, audit, all]
+      max_cost_usd:
+        description: "hard cost ceiling for the run"
+        default: "15"
 jobs:
   gates:
     runs-on: ubuntu-latest
@@ -33,6 +45,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     needs: gates
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -46,27 +59,47 @@ jobs:
           sudo apt-get install -y bubblewrap socat
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
           bwrap --ro-bind / / --dev /dev --proc /proc --unshare-all true && echo "bwrap ok"
-      - env: { ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}" }
-        run: claude plugin eval . --trust-plugin --tag smoke --runs 1 --ablation none --allow-tools Bash --no-publish --max-cost-usd 5 --json eval-smoke.json
+      - name: live eval (${{ inputs.cases || 'smoke' }})
+        env: { ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}" }
+        run: |
+          case "${{ inputs.cases || 'smoke' }}" in
+            smoke)  TAGS="--tag smoke";            TOOLS="Bash";            SCAFFOLD="" ;;
+            create) TAGS="--tag create";           TOOLS="Bash Write Edit"; SCAFFOLD="--scaffold" ;;
+            audit)  TAGS="--tag audit";            TOOLS="Bash Write Edit"; SCAFFOLD="--scaffold" ;;
+            all)    TAGS="";                       TOOLS="Bash Write Edit"; SCAFFOLD="--scaffold" ;;
+          esac
+          claude plugin eval . --trust-plugin $TAGS $SCAFFOLD --allow-tools $TOOLS --runs 1 --ablation none \
+            --no-publish --keep-temp --max-cost-usd "${{ inputs.max_cost_usd || '15' }}" --json eval-result.json \
+            || echo "eval exit $?"   # a failing case still produces the JSON; the summary step reports it
       - name: eval summary
         if: always()
         run: |
           python3 - <<'PY'
           import json, os
-          if not os.path.exists("eval-smoke.json"): raise SystemExit("no eval-smoke.json")
-          d = json.load(open("eval-smoke.json"))
+          if not os.path.exists("eval-result.json"): raise SystemExit("no eval-result.json")
+          d = json.load(open("eval-result.json"))
           print(f"claude {d.get('claudeVersion')}  cost ${d.get('costUsd', 0):.2f}  {d.get('durationSeconds')}s  partial={d.get('partial')} {d.get('partialReason', '')}")
+          bad = 0
           for c in d["cases"]:
               for arm, runs in c["arms"].items():
                   for r in runs:
+                      bad += not r["passed"]
                       print(f"{c['name']} [{arm}] score={r['score']} turns={r['turns']} error={r.get('error')}")
                       for g in r["graders"]:
                           print(f"   {'PASS' if g['passed'] else 'FAIL'} {g['name']}: {str(g.get('explanation', ''))[:300]}")
+          raise SystemExit(1 if bad else 0)
           PY
+      - name: collect sandboxes (what the agent actually wrote)
+        if: always()
+        run: |
+          mkdir -p sandboxes
+          for d in /tmp/claude-eval-*; do [ -d "$d" ] && tar --exclude='*/node_modules' --exclude='*/.venv' -czf "sandboxes/$(basename "$d").tgz" -C "$d" . || true; done
+          ls -la sandboxes
       - uses: actions/upload-artifact@v5
         if: always()
         with:
-          name: eval-smoke
+          name: eval-${{ inputs.cases || 'smoke' }}
           path: |
-            eval-smoke.json
+            eval-result.json
             evals/results
+            sandboxes
