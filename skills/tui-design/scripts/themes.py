@@ -61,7 +61,7 @@ _t(id="noir", name="Terminal noir", mood="operator consoles, ops/data/finance to
 _t(id="blueprint", name="Blueprint", mood="architecture and infra tooling — navy ground, ice ink, cross glyphs",
    palette={"ink": "#dfe9ff", "dim": "#7d8db0", "accent": "#8fc1ff", "ok": "#7fd0a8", "warn": "#e0c07a", "stop": "#ff8a8a"},
    light={"ink": "#0a2a5e", "dim": "#5b6b8a", "accent": "#1d5fb8", "ok": "#1f7a4d", "warn": "#8a6a10", "stop": "#b03030"},
-   box="light", banner="shade", glyphs=Glyphs(meter="╬╪┼·", bullet="+", marks={"done": "✓", "todo": "+", "blocked": "✗", "unknown": "?", "waiting": "…", "skip": "·"}),
+   box="light", banner="shade", glyphs=Glyphs(meter="╬╪┼·", bullet="+", marks={"done": "✓", "todo": "•", "blocked": "✗", "unknown": "?", "waiting": "…", "skip": "·"}),  # todo was "+", which is the ASCII *done* mark — same glyph, opposite meaning across terminals
    recipe='recipe:v1:{"style":"cross","palette":"blueprint","fx":["scanlines"],"anim":"none"}')
 
 _t(id="phosphor", name="Green phosphor", mood="retro terminals, monitoring, anything that wants to feel like a P1 CRT",

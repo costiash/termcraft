@@ -1,0 +1,39 @@
+{
+ "claudeVersion": "2.1.274",
+ "startedAt": "2026-09-17T22:20:14.478Z",
+ "where": "GitHub Actions ubuntu-latest, workflow_dispatch, bubblewrap sandbox",
+ "command": "claude plugin eval . --trust-plugin --tag smoke --runs 1 --ablation none --allow-tools Bash --no-publish --max-cost-usd 5",
+ "costUsd": 1.2078487500000004,
+ "durationSeconds": 214,
+ "case": "design-theme-pick",
+ "score": 1,
+ "passed": true,
+ "turns": 11,
+ "graders": [
+  {
+   "name": "mentions-fallbacks",
+   "passed": true,
+   "explanation": "matched NO_COLOR|mono|ascii"
+  },
+  {
+   "name": "names-bank-themes",
+   "passed": true,
+   "explanation": "matched \\b(noir|slate|blueprint|phosphor|amber|paper|cyber|mono)\\b[\\s\\S]*\\b(noir|slate|blueprint|phosphor|amber|paper|cyber|mono)\\b"
+  },
+  {
+   "name": "no-hand-picked-hex",
+   "passed": true,
+   "explanation": "judge votes: PASS PASS PASS"
+  },
+  {
+   "name": "routes-to-tui-design",
+   "passed": true,
+   "explanation": "matched tui-designer|tui-design|termcraft:design"
+  }
+ ],
+ "lastMessage": "Three candidates rendered at 80 columns. Nothing applied — previews live in `/tmp/claude-eval-jfvZxu/tmp/pb-theme-previews/` (`.ansi` = colour, view with `cat`; `.txt` = escape-stripped, which is literally your CI log).\n\nSince the working dir has no `pb` source, the screens use standard installer content mapped onto assumed stages: host / python / docker / setup / env / data.\n\n## The three\n\n**1. noir** — sepia ink on black, one amber accent, light `┌┐` box. Infrastructure mood, matches an ops/data tool.\n**2. slate** — grey-blue ink, blue accent, rounded `╭╮` box. Vendor-neutral; the pick if `pb` ships to customers.\n**3. blueprint** — ice on navy, `╬╪┼·` meter, `+` bullets. Most distinctive, reads as pipeline topology.\n\nThe plan/prompt screens are near-identical across all three; what actually differs is accent hue, box weight, meter glyph and banner style:\n\n| | box | progress meter | banner |\n|---|---|---|---|\n| noir | `┌─┐` | `████████░░░░` | block |\n| slate | `╭─╮` | `████████░░░░` | slab |\n| blueprint | `┌─┐` | `╬╬╬╬╬╬╬╬····` | shade |\n\nFull screens above in the tool output; noir's plan screen is the representative one.\n\n## What CI / NO_COLOR users see — verified, not predicted\n\n- **Zero escape sequences** under `NO_COLOR=1` and under plain piping. Measured 0 on the transcripts, and colour is one shared code path, so this holds for all three.\n- **Progress collapses to nothing.** The kit returns early when stdout isn't a TTY (`harness_kit.py:284`) — no spinner, no meter, no `\\r` rewriting, so no smeared CI logs. Cursor-hiding is TTY-gated too, so no stray `\\x1b[?25l`. CI keeps the plan table, streamed subprocess lines, and per-stage outcomes (`✓ setup-environment.sh 58s`). Lost: live elapsed-vs-expected. Final durations survive.\n- **Status is never colour-only** — every row carries a glyph *and* a word (`done/blocked/todo/waiting/unknown`), so the stripped text is fully decodable.\n- **NO_COLOR keeps Unicode glyphs.** It strips colour only; it does not switch to ASCII marks. That's a separate capability check (`HARNESS_ASCII=1` / non-UTF locale), which gives you the `+ * x ? ~` variant shown above.\n\nTwo things worth knowing before you pick:\n\n- **On 16-colour terminals the three are indistinguishable** — they share one `ansi16` map, so noir's amber accent becomes cyan. The choice only exists in truecolor (which you have) and in CI they differ only by box weight and meter glyph.\n- **ASCII mode has two kit-level glyph gaps** (`harness_kit.py:121`): `≥` → `?` (so `python3 ? 3.10`) and the log-gutter `│` → `?`, which then looks like the \"unknown\" mark. Affects all three equally; fixable at apply time by writing `>=` and `|` literally in stage text.\n\n## Recommendation\n\n**noir.** It matches the stated mood and has the cleanest degradation: `✓ • ✗` + `█▓▒░` → `+ * x` + `#.` with no ambiguity.\n\nConcrete argument against blueprint *for `pb` specifically*: its Unicode `todo` mark is `+` while its ASCII `done` mark is also `+`. The same character would mean \"not yet run\" on your terminal and \"finished\" in the CI log — bad for a tool read in both places. slate is the fallback if neutrality matters more than mood.\n\nTwo side notes: if many operators run light terminals, pick `paper` over any of these — noir on light loses its identity completely (dark brown on white), blueprint holds up best. And at two letters the block banner's P and B are a bit mushy; slab is the crisper letterform if you want noir's palette with a cleaner wordmark.\n\nWhich one? I'll hand the pick back to the designer to generate `theme.py` and verify it in a pty — and I'll need the `pb` source directory at that point, since it isn't here.",
+ "defects_found_by_the_run": [
+  "harness_kit ASCII mode mapped ≥ and │ to ?, the unknown mark (fixed 0.7.6)",
+  "blueprint todo mark + equals the ASCII done mark (fixed 0.7.6)"
+ ]
+}

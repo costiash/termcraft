@@ -17,6 +17,12 @@ class ThemesAndBanners(unittest.TestCase):
                 self.assertRegex(t.palette[role], r"^#[0-9a-f]{6}$", t.id); self.assertRegex(t.light[role], r"^#[0-9a-f]{6}$", t.id)
             self.assertIn(t.box, ("light", "rounded", "heavy", "double", "ascii")); self.assertIn(t.banner, ("block", "slab", "shade", "plain"))
             self.assertTrue(t.glyphs.spinner and t.glyphs.meter and set(t.glyphs.marks) >= {"done", "todo", "blocked", "unknown", "waiting"})
+            # a glyph must not mean one status on a Unicode terminal and a different status in the ASCII fallback
+            # (blueprint's todo "+" collided with the ASCII done "+": found by the live eval)
+            ascii_marks = t.glyphs.ascii_fallback["marks"]
+            for status, glyph in t.glyphs.marks.items():
+                for other, a in ascii_marks.items():
+                    if other != status: self.assertNotEqual(glyph, a, f"{t.id}: unicode {status}={glyph!r} equals ascii {other}={a!r}")
 
     def test_banner_styles_fit_and_fallback(self):
         sys.path.insert(0, str(HERE)); import banner

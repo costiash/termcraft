@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.6 — 2026-09-18
+- Live smoke eval passed in GitHub Actions with the Bash sandbox (score 1.0, 11 turns, previews actually rendered; `evals/evidence/2026-09-17-ci-smoke.json`). The run surfaced two real defects, both fixed with regressions:
+  - `harness_kit.py` ASCII mode turned `≥`, `≤`, `│`, `─` into `?` — the *unknown* mark. Now `>=`, `<=`, `|`, `-` (plus box/meter glyphs).
+  - blueprint's Unicode `todo` mark was `+`, which is the ASCII `done` mark: same glyph, opposite meaning across terminals. Now `•`; a theme test forbids any such cross-terminal collision.
+
 ## 0.7.5 — 2026-09-17
 - Official gate falls back to text mode on CLIs without `--json` (GitHub's ubuntu image ships 2.1.197); workflow installs the current CLI and puts it first on PATH.
 - `scripts/check_plugin.py`: nine CI-grade gates in one command (official `claude plugin validate --strict`, manifest, links, compile, tests, previews, contrast, evals, package); `--json`, `--skip`, `--only`.

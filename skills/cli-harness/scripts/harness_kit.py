@@ -118,7 +118,14 @@ ASCII_GLYPHS = {"box": "ascii", "meter": "#=-.", "spinner": "|/-\\", "rule": "-"
 
 def _text(text: str) -> str:
     if UNICODE: return text
-    return text.translate(str.maketrans({"✓": "+", "✗": "x", "•": "*", "→": "->", "—": "-", "…": "...", "·": "."})).encode("ascii", "replace").decode("ascii")
+    return text.translate(_ASCII_MAP).encode("ascii", "replace").decode("ascii")
+
+# Stage text written by harness authors often carries comparison and drawing glyphs; map the common ones to
+# unambiguous ASCII instead of letting them fall through to "?" (which is the `unknown` mark).
+_ASCII_MAP = str.maketrans({"✓": "+", "✗": "x", "•": "*", "→": "->", "←": "<-", "—": "-", "–": "-", "…": "...", "·": ".",
+                            "≥": ">=", "≤": "<=", "≠": "!=", "±": "+/-", "×": "x", "│": "|", "┃": "|", "─": "-", "━": "-",
+                            "├": "|", "└": "`", "┌": "+", "┐": "+", "┘": "+", "╭": "+", "╮": "+", "╰": "+", "╯": "+",
+                            "█": "#", "▓": "=", "▒": "-", "░": ".", "“": '"', "”": '"', "‘": "'", "’": "'"})
 
 def cols() -> int: return min(120, shutil.get_terminal_size((80, 24)).columns)
 

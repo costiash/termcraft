@@ -28,6 +28,13 @@ class TerminalUI(unittest.TestCase):
         text = self.capture(lambda ui: ui.line("✓ done → next • item ✗ blocked — wait…"), unicode=False)
         self.assertTrue(text.isascii(), text)
 
+    def test_ascii_keeps_meaning_of_comparisons_and_gutters(self):
+        # found by the live eval: "python3 ≥ 3.10" became "python3 ? 3.10" and the log gutter │ became ?, the unknown mark
+        text = self.capture(lambda ui: ui.line("python3 ≥ 3.10 │ disk ≤ 80% ─ done"), unicode=False)
+        self.assertTrue(text.isascii(), text)
+        self.assertIn("python3 >= 3.10 | disk <= 80% - done", text)
+        self.assertNotIn("?", text)
+
     def test_color_capabilities(self):
         for env, mode in [({"NO_COLOR": "", "TERM": "xterm"}, "none"),
                           ({"TERM": "dumb", "COLORTERM": "truecolor"}, "none"),

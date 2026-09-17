@@ -71,7 +71,7 @@ python3 scripts/check_plugin.py --skip official   # on a box without the claude 
 | `manifest` | kebab-case name, semver, descriptions long enough to trigger; every `SKILL.md` and agent has **parseable** YAML frontmatter with the right `name`, `<example>` blocks, `model`/`color`; entry skills dispatch to agents that exist. The official validator (2.1.x) reports only components it has findings for and does not parse SKILL.md frontmatter strictly — this gate does |
 | `links` | every `references/…`, `scripts/…`, `assets/…` path mentioned in a skill or agent exists; no leftovers from the removed web skill or the old plugin name |
 | `compile` | every `.py` compiles |
-| `tests` | all bundled `test_*.py` suites pass (61 tests: kit contract, pty driver, digest, UI, tools, reviews) |
+| `tests` | all bundled `test_*.py` suites pass (62 tests: kit contract, pty driver, digest, UI, tools, reviews) |
 | `previews` | all themes render dark/light/ASCII at 80 columns; no line wider than 80; ASCII previews are pure ASCII |
 | `contrast` | 48 palette-role checks: ink ≥ 7:1, dim ≥ 3:1, accent ≥ 4.5:1 |
 | `evals` | the `evals/` suite parses (frontmatter, grader types, scaffold scripts) |
