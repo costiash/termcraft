@@ -87,10 +87,17 @@ def g_official(notes):
     # plugin.json validation also walks agents/ and commands/; skills/ and agents/ are validated again as
     # component dirs. The CLI (2.1.x) lists only components it has findings for, and it does not parse SKILL.md
     # frontmatter or agent YAML strictly — the `manifest` gate does; this gate only proves the CLI raised nothing.
+    json_mode = "--json" in sh(["claude", "plugin", "validate", "--help"]).stdout  # --json arrived in 2.1.2xx
     for target in (".claude-plugin/plugin.json", ".claude-plugin/marketplace.json", "skills", "agents"):
+        if not json_mode:  # older CLI: text report; exit 0 + "passed" is the only signal, so capture the text on failure
+            r = sh(["claude", "plugin", "validate", "--strict", target])
+            text = (r.stdout + r.stderr).strip()
+            if r.returncode == 0 and "passed" in text.lower(): notes.append(f"{target}: strict OK (text mode)")
+            else: ok = False; notes.append(f"{target}: exit {r.returncode}: " + " | ".join(l.strip() for l in text.splitlines() if l.strip())[:400])
+            continue
         r = sh(["claude", "plugin", "validate", "--strict", "--json", target])
         try: d = json.loads(r.stdout)
-        except json.JSONDecodeError: notes.append(f"{target}: non-JSON output (exit {r.returncode}): {r.stderr[:200]}"); ok = False; continue
+        except json.JSONDecodeError: notes.append(f"{target}: non-JSON output (exit {r.returncode}): {(r.stdout + r.stderr).strip()[:200]}"); ok = False; continue
         man = d.get("manifest") or {}; contents = d.get("contents") or []
         errs = list(man.get("errors", [])) + [e for c in contents for e in c.get("errors", [])]
         warns = list(man.get("warnings", [])) + [w for c in contents for w in c.get("warnings", [])]
@@ -98,7 +105,7 @@ def g_official(notes):
             ok = False; notes.append(f"{target}: success={d.get('success')} exit={r.returncode} errors={[e.get('message') for e in errs]} warnings={[w.get('message') for w in warns]}")
         else:
             notes.append(f"{target}: strict OK, no findings" + (f" ({man.get('type')} manifest)" if man else ""))
-    notes.append(f"claude {v}"); return ok
+    notes.append(f"claude {v}" + ("" if json_mode else " — no --json support; text mode (findings not itemised)")); return ok
 
 @gate("manifest")
 def g_manifest(notes):

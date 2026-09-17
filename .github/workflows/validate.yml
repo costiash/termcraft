@@ -4,32 +4,46 @@ jobs:
   gates:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with: { python-version: "3.12" }
-      - uses: actions/setup-node@v4
-        with: { node-version: "20" }
+      - uses: actions/setup-node@v5
+        with: { node-version: "22" }
       - run: pip install pyyaml pillow numpy
-      - run: npm install -g @anthropic-ai/claude-code
-      - name: all gates (official validate, manifest, links, compile, tests, previews, contrast, evals, package)
-        run: python3 scripts/check_plugin.py --json | tee check-report.json | python3 -c "import json,sys; d=json.load(sys.stdin); [print(('PASS' if g['ok'] else 'FAIL'), g['gate'], *g['notes'], sep='\n  ') for g in d['gates']]; sys.exit(0 if d['ok'] else 1)"
-      - uses: actions/upload-artifact@v4
+      # ubuntu-latest ships an older Claude Code; put the freshly installed one first on PATH
+      - run: |
+          npm install -g @anthropic-ai/claude-code@latest
+          echo "$(npm prefix -g)/bin" >> "$GITHUB_PATH"
+      - name: toolchain
+        run: |
+          python3 --version
+          which -a claude; claude --version
+          claude plugin validate --strict .claude-plugin/plugin.json
+      - name: all gates
+        run: python3 scripts/check_plugin.py
+      - name: report (json)
+        if: always()
+        run: python3 scripts/check_plugin.py --json > check-report.json || true
+      - uses: actions/upload-artifact@v5
         if: always()
         with: { name: check-report, path: check-report.json }
-  # Live acceptance: runs the smoke eval against a real model. Needs ANTHROPIC_API_KEY (or OAuth) in secrets;
+  # Live acceptance: runs the smoke eval against a real model. Needs ANTHROPIC_API_KEY in repo secrets;
   # opt-in via workflow_dispatch so pushes stay free.
   live-eval:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     needs: gates
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: "20" }
-      - run: npm install -g @anthropic-ai/claude-code
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: "22" }
+      - run: |
+          npm install -g @anthropic-ai/claude-code@latest
+          echo "$(npm prefix -g)/bin" >> "$GITHUB_PATH"
+      - run: sudo apt-get install -y bubblewrap socat
       - env: { ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}" }
         run: claude plugin eval . --trust-plugin --tag smoke --runs 1 --ablation none --allow-tools Bash --no-publish --max-cost-usd 5 --json eval-smoke.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: always()
         with:
           name: eval-smoke

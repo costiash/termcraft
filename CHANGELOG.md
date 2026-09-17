@@ -1,6 +1,7 @@
 # Changelog
 
 ## 0.7.5 — 2026-09-17
+- Official gate falls back to text mode on CLIs without `--json` (GitHub's ubuntu image ships 2.1.197); workflow installs the current CLI and puts it first on PATH.
 - `scripts/check_plugin.py`: nine CI-grade gates in one command (official `claude plugin validate --strict`, manifest, links, compile, tests, previews, contrast, evals, package); `--json`, `--skip`, `--only`.
 - `evals/`: three `claude plugin eval` cases (theme pick smoke, harness create on a scaffolded fixture, harness audit of a wizard with planted defects). Smoke case executed live: 4/4 graders (`evals/evidence/`).
 - `.github/workflows/validate.yml`: gates on every push; smoke eval on manual dispatch (needs `ANTHROPIC_API_KEY`).

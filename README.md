@@ -67,7 +67,7 @@ python3 scripts/check_plugin.py --skip official   # on a box without the claude 
 
 | gate | what it proves |
 |---|---|
-| `official` | `claude plugin validate --strict --json` raises nothing for `plugin.json`, `marketplace.json`, `skills/`, `agents/` |
+| `official` | `claude plugin validate --strict --json` raises nothing for `plugin.json`, `marketplace.json`, `skills/`, `agents/` (a CLI older than `--json`, e.g. the one preinstalled on GitHub runners, is driven in text mode: pass/fail only) |
 | `manifest` | kebab-case name, semver, descriptions long enough to trigger; every `SKILL.md` and agent has **parseable** YAML frontmatter with the right `name`, `<example>` blocks, `model`/`color`; entry skills dispatch to agents that exist. The official validator (2.1.x) reports only components it has findings for and does not parse SKILL.md frontmatter strictly — this gate does |
 | `links` | every `references/…`, `scripts/…`, `assets/…` path mentioned in a skill or agent exists; no leftovers from the removed web skill or the old plugin name |
 | `compile` | every `.py` compiles |
