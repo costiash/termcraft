@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.10 — 2026-09-18
+- `harness-create` passed live in CI on 0.7.9: **score 1.0, 7/7 graders**, 16 turns, 1228 s, $6.80. Deliverable: 8-stage `relayctl.py` on the kit, noir theme, process model, 13/13 pty scenarios, honest hand-back (`evals/evidence/2026-09-18-ci-create-0.7.9.json`). Audit gate 1 now closed for create.
+- Fixture: the create scaffold now ships the `relay` package its `install.sh` promised (the agent correctly flagged its absence).
+- Docs: `libraries.md` notes that the Rich upgrade replaces the theme's box weight and that pty drivers must wait for the prompt before sending a secret (getpass disables echo only once it runs).
+
 ## 0.7.9 — 2026-09-18
 - First live `harness-create` run in CI (0.7.8): 6/7 graders, 89 turns, $6.08. The architect produced the full deliverable — process model, `relayctl.py` on the kit, noir theme via the designer, 12 pty scenarios (12/12), a real run in the tree, `HARNESS.md` — and timed out at 1800 s re-running scenarios before the hand-back. Evidence: `evals/evidence/2026-09-17-ci-create-0.7.8.json`.
 - Kit: plan/progress title column now fits the longest title (was cut at 28 chars); ellipsis when it still overflows.

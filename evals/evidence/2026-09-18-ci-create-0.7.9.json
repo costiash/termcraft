@@ -1,0 +1,62 @@
+{
+ "claudeVersion": "2.1.275",
+ "plugin": "0.7.9",
+ "startedAt": "2026-09-17T23:50:22.355Z",
+ "where": "GitHub Actions ubuntu-latest, --scaffold --allow-tools Bash Write Edit, bubblewrap sandbox (PyPI blocked)",
+ "costUsd": 6.800895000000003,
+ "durationSeconds": 1228,
+ "case": "harness-create",
+ "score": 1,
+ "passed": true,
+ "turns": 16,
+ "graders": [
+  {
+   "name": "driven-in-pty",
+   "passed": true,
+   "explanation": "Bash called 12x (expected 1..∞)"
+  },
+  {
+   "name": "dry-run-exercised",
+   "passed": true,
+   "explanation": "Bash called 7x (expected 1..∞)"
+  },
+  {
+   "name": "handback-quality",
+   "passed": true,
+   "explanation": "judge votes: PASS PASS PASS"
+  },
+  {
+   "name": "harness-on-kit",
+   "passed": true,
+   "explanation": "relay/harness/harness_kit.py exists as expected"
+  },
+  {
+   "name": "process-model-written",
+   "passed": true,
+   "explanation": "relay/harness/process-model.md exists as expected"
+  },
+  {
+   "name": "routes-to-harness-architect",
+   "passed": true,
+   "explanation": "matched harness-architect|termcraft:harness|cli-harness"
+  },
+  {
+   "name": "scenarios-written",
+   "passed": true,
+   "explanation": "relay/harness/scenarios/*.json exists as expected"
+  }
+ ],
+ "lastMessage": "Done. Built via the plugin's harness pipeline (architect → tui-designer → pty verification), and I re-ran the verification myself to confirm.\n\n## What's under `relay/harness/`\n\n| File | |\n|---|---|\n| `relayctl.py` | the harness — 8 stages on the kit, stdlib only, executable |\n| `harness_kit.py` | the plugin's runtime, copied beside it unmodified |\n| `theme.py` | Terminal noir palette + `RELAY` banner (+ ASCII twin) |\n| `process-model.md` | the reviewable spec: invariants, probes, asks, effects, enumerated exits |\n| `connection-map.json`, `map.mmd` | digest of the source tree |\n| `scenarios/` | 13 pty scenarios, `verify.py`, recorded transcripts |\n| `HARNESS.md` | one screen: run, flags, exit codes, resume, journal path |\n\n## Stage model\n\nYour four stages expand to eight, because `install.sh` bundles several independently-failing preconditions into one `set -e` run:\n\n`python → venv → deps → envfile → token → datadir → migrate → ready`\n\nEvery probe reads real state and every effect is the project's own command: `python3` on PATH and ≥ 3.10 (install.sh's own two guards), `.venv/bin/python` runs, each `requirements.txt` spec checked offline against installed distributions, `config/relay.env` exists, `RELAY_TOKEN` non-empty (length only — the value is never printed, file written mode 600), data dir resolved through `RELAY_DATA_DIR` → env file → `./data` and writable, `schema.version` compared against the version literal parsed out of `scripts/migrate.py`, then five readiness checks including `RELAY_PORT` free and `relay` importable. Resume is probe-driven: it re-probes before each stage, skips what's already done, and the journal at `relay/.harness/relayctl.jsonl` records transitions only.\n\nTheme is **Terminal noir** — sepia on black, one amber accent — chosen as the ops/infra family default under your delegation, with mono/ASCII/`NO_COLOR`/light-terminal fallbacks.\n\n## Verification — 13/13, re-run by me just now\n\n```\nPASS 01-check-clean   0   PASS 08-lateblock-rerun-resumes 0\nPASS 02-dry-run       0   PASS 09-yes-missing-input       6\nPASS 03-happy         0   PASS 10-nontty-pipe             6\nPASS 04-rerun-idem    0   PASS 11-no-color-ascii-light    0\nPASS 05-ready-blocked 3   PASS 12-sigint-aborts           5\nPASS 06-pip-unreach   4   PASS 13-rich-surface-optin      0\nPASS 07-late-block    4\n```\n\nRead-only runs are proven inert by sha256+mode snapshots of the whole fixture tree; no token appears in any journal or transcript; `NO_COLOR=1` emits zero colour escapes; 80 columns holds; Ctrl-C restores the cursor. Exit 3 (blocked, nothing changed) vs exit 4 (failed after effects, rerun resumes) is confirmed against the runtime, not assumed.\n\n## Two things you should know\n\n**The `relay` package doesn't exist in the repo.** `install.sh` ends by telling you to run `python3 -m relay serve`, but there's no `relay` module anywhere in the tree. The harness probes for it with `find_spec` rather than assuming, and `ready` blocks with \"install the relay application code into .venv\". That's a gap in the project, not in the harness.\n\n**Two paths could not be executed here.** The sandbox refuses PyPI (`deny network-outbound pypi.org:443`), so a *successful* `pip install` never ran — only its failure path is verified end to end, which is the exit-4 scenario. And with no `relay` module, a genuinely importable serve entrypoint was never exercised. To verify the surrounding flow the agent added `RELAY_HARNESS_FAKE=1`, which provisions deps from the running interpreter and treats the serve check as satisfied; it's disclosed in `HARNESS.md`, in the process model, and in the harness's own first output line, and nothing else selects it. On a host with a package index, drop it — `deps` then runs real pip and `ready` demands the real module. That's the one part of the model I'd want you to confirm on real infrastructure.\n\nI also deleted `scenarios/work/` (64 MB of regenerable fixture trees my verification run created) and added a `.gitignore` for it. `relay/` is still entirely untracked — I haven't committed anything.",
+ "deliverable": [
+  "relayctl.py (8 stages: python → venv → deps → envfile → token → datadir → migrate → ready; stdlib tier)",
+  "harness_kit.py copied unmodified",
+  "theme.py (noir, RELAY banner + ASCII twin)",
+  "process-model.md, connection-map.json, map.mmd, HARNESS.md",
+  "13 pty scenarios + verify.py, 13/13 passing; read-only modes proven inert by sha256+mode snapshots; secrets absent from journal/transcripts; exit 3 vs 4 confirmed against the runtime"
+ ],
+ "findings": [
+  "fixture gap (real): install.sh says `python3 -m relay serve` but the scaffold has no relay package — the harness probed with find_spec and blocked `ready` honestly; scaffold now ships a stub package (0.7.10)",
+  "sandbox: PyPI blocked, so a successful pip install path could not run; agent added a disclosed RELAY_HARNESS_FAKE=1 path and said so in the hand-back",
+  "generated harness pins HARNESS_PLAIN=1 by default, noting the Rich upgrade bypasses the theme's box weight (true) and 'briefly echoes hidden input' — re-tested in a pty here: neither plain nor Rich echoes a secret sent after the prompt; the echo seen was the driver sending input before getpass disabled echo (documented)"
+ ]
+}

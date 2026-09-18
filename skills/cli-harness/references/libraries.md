@@ -45,3 +45,8 @@ Tier 2 is the exception, not the goal: a wizard is a sequence of screens, not an
 ## Source note
 
 Requested source: the Medium article "21 Python libraries that quietly do the work you're still doing by hand" (python.plainenglish.io). Items 1–7 were reviewed (Loguru, Pyinstrument, orjson, RapidFuzz, more-itertools, cachetools, tqdm); the fetch is paywalled past the first item, so items 8–21 were not seen. For a harness the ones that change the person's experience are **Loguru** (a human log beside the journal, rotation, secret-filtering `patcher`), **RapidFuzz** ("did you mean" on stage names and answers), **cachetools** (probe memoisation with TTL) and **tqdm** (per-loop progress inside a stage, only when Rich is not already the renderer). Pyinstrument is a development aid; orjson and more-itertools are conveniences, not UX. Everything above stays optional: detect, don't require.
+
+## Notes from live runs
+
+- The kit upgrades to Rich when it is importable. That swaps the plan/panel rendering for Rich's own (the theme's box weight is not applied there) and Rich re-prompts on empty input instead of returning it. A harness that wants the exact pty-verified stdlib surface can set `HARNESS_PLAIN=1` at startup and expose an opt-in for Rich; say so in `HARNESS.md`.
+- Secrets: neither the plain (`getpass`) nor the Rich (`password=True`) prompt echoes input — verified in a pty. A scenario that sends the secret *before* the prompt has appeared will see it echoed by the terminal, because `getpass` disables echo only when it runs. Always `expect` the prompt text first.
